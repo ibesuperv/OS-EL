@@ -18,31 +18,31 @@ import ctypes
 class ThemeManager:
     def __init__(self):
         self.dark_theme = {
-            "bg": "#0B2239",  # Slightly lighter blue background
-            "surface": "#000",  # Adjusted surface color for contrast
-            "accent": "#1A73E8",  # Slightly softer blue accent
-            "accent_secondary": "#21A1FF",  # Brighter secondary accent
-            "text": "#FFFFFF",
-            "text_secondary": "#A0B3C8",
-            "border": "#264D73",  # Adjusted border for better visibility
+            "bg": "#000",  # Slightly lighter blue background
+            "surface": "#272727",  # Adjusted surface color for contrast
+            "accent": "#fff",  # Slightly softer blue accent
+            "accent_secondary": "#706C61",  # Brighter secondary accent
+            "text": "#09f44a",
+            "text_secondary": "#020c14",
+            "border": "#EFF1F3",  # Adjusted border for better visibility
             "success": "#66BB6A",
             "warning": "#FFA726",
             "error": "#F44336",
-            "gradient": ["#1A73E8", "#21A1FF"]  # Gradient colors
+            "gradient": ["#000", "#000"]  # Gradient colors
         }
 
         self.light_theme = {
-            "bg": "#E7ECF3",  # Slightly darker light background
-            "surface": "#FAFBFD",  # Soft surface color
-            "accent": "#1565C0",  # Stronger blue for light theme
-            "accent_secondary": "#42A5F5",  # Bright secondary accent
-            "text": "#212121",
+            "bg": "#fff",  # Slightly darker light background
+            "surface": "#CBD4C2",  # Soft surface color
+            "accent": "#fff",  # Stronger blue for light theme
+            "accent_secondary": "#fff",  # Bright secondary accent
+            "text": "#000",
             "text_secondary": "#546E7A",
-            "border": "#CFD8DC",  # Softer border
+            "border": "#000",  # Softer border
             "success": "#388E3C",
             "warning": "#F57C00",
             "error": "#C62828",
-            "gradient": ["#1565C0", "#42A5F5"]
+            "gradient": ["#fff", "#fff"]
         }
 
         self.current_theme = self.dark_theme
@@ -52,7 +52,7 @@ class ThemeManager:
         self.is_dark = not self.is_dark
         self.current_theme = self.dark_theme if self.is_dark else self.light_theme
         return self.current_theme
-# Define a MetricBox class to show individual metrics
+# Define a MetricBox class to show Fsystindividual metrics
 class MetricBox(ctk.CTkFrame):
     def __init__(self, master, title, **kwargs):
         super().__init__(master, **kwargs)
@@ -232,7 +232,7 @@ class SystemMonitor(ctk.CTk):
     def __init__(self):
         super().__init__()
         
-        self.title("System Monitor Pro")
+        self.title("System Resourse Monitor ")
         self.geometry("1400x900")
         
         # Initialize theme manager
@@ -270,27 +270,28 @@ class SystemMonitor(ctk.CTk):
         self.monitor_thread.start()
 
     def create_sidebar(self):
+        # Create sidebar frame
         self.sidebar = ctk.CTkFrame(
-            self, 
+            self,
             width=250,
             fg_color=self.colors["surface"],
             corner_radius=0
         )
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        
-        # Logo/header area
+
+        # Logo header
         header_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        header_frame.grid(row=0, column=0, padx=20, pady=(20,10), sticky="ew")
-        
+        header_frame.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="ew")
+
         logo_label = ctk.CTkLabel(
             header_frame,
-            text="SYSTEM\nMONITOR",
+            text="SYSTEM MONITOR",
             font=ctk.CTkFont(size=24, weight="bold"),
             text_color=self.colors["accent"]
         )
         logo_label.pack()
-        
-        # Add theme switch
+
+        # Theme switch toggle
         theme_switch = ctk.CTkSwitch(
             header_frame,
             text="Dark Mode",
@@ -302,29 +303,29 @@ class SystemMonitor(ctk.CTk):
         )
         theme_switch.pack(pady=10)
         theme_switch.select() if self.theme_manager.is_dark else theme_switch.deselect()
-        
-        # Separator
+
+        # Separator line
         separator = ctk.CTkFrame(
             self.sidebar,
             height=2,
             fg_color=self.colors["accent"]
         )
         separator.grid(row=1, column=0, sticky="ew", padx=20, pady=10)
-        
-        # Navigation buttons with icons
+
+        # Navigation buttons with icons and hover effects
         sections = {
             "Overview": "🏠",
             "CPU": "⚡",
             "Memory": "💾",
             "Virtual Memory": "📊",
             "Disk": "💿",
-            "Network":"🛜"
+            "Network": "🛜"
         }
-        
-        # Create a frame for navigation buttons
+
+        # Navigation frame container
         nav_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         nav_frame.grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
-        
+
         for i, (section, icon) in enumerate(sections.items()):
             btn = ctk.CTkButton(
                 nav_frame,
@@ -332,15 +333,42 @@ class SystemMonitor(ctk.CTk):
                 command=lambda s=section: self.show_section(s),
                 fg_color="transparent",
                 hover_color=self.colors["accent"],
-                height=45,
+                height=50,  # Slightly larger button for better spacing
                 anchor="w",
-                font=ctk.CTkFont(size=14),
+                font=ctk.CTkFont(size=16, weight="bold"),  # Larger text for better readability
                 corner_radius=8,
                 text_color=self.colors["text"],
-                border_width=1,
+                border_width=2,  # Thicker border for emphasis
                 border_color=self.colors["border"]
             )
-            btn.pack(fill="x", pady=2)
+            btn.pack(fill="x", pady=5)
+
+        # Footer Section
+        footer_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        footer_frame.grid(row=3, column=0, padx=20, pady=30, sticky="ew")
+
+        # Logout button (modernized)
+        logout_btn = ctk.CTkButton(
+            footer_frame,
+            text="Logout",
+            command=self.logout,
+            fg_color=self.colors["error"],
+            hover_color=self.colors["error"],
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color=self.colors["text"]
+        )
+        logout_btn.pack(fill="x", pady=10)
+
+        # Add a little padding between sections to keep the layout clean
+        self.sidebar.grid_rowconfigure(0, weight=1)  # Logo section takes space
+        self.sidebar.grid_rowconfigure(2, weight=10)  # Navigation buttons take more space
+        self.sidebar.grid_rowconfigure(3, weight=1)  # Footer section takes less space
+  
+    def logout(self):
+        # Add your logout logic here, for example:
+        print("Logging out...")
+        # You can add any clean-up, window closure, or redirect logic here
+        self.quit()  # This will quit the tkinter application
 
     def create_main_area(self):
         # Create a canvas with scrollbar
